@@ -4,9 +4,9 @@
       <div @click="onSourceSelected(source)"
            class="flex align-content-start flex-wrap">
         <span class="flex align-items-center justify-content-center mr-2">
-          <p-avatar :image="source.urlToLogo"
+          <pv-avatar :image="source.urlToLogo"
                     shape="circle"
-                    :aria-label="source.name"></p-avatar>
+                    :aria-label="source.name"></pv-avatar>
         </span>
         <span class="flex align-items-center justify-content-center">
           {{ source.name }}
@@ -35,7 +35,7 @@ export default {
     this.newsApi.getSources()
         .then(response => {
           this.sources = response.data.sources;
-          this.sources.map(source => source.getUrlToLogo = this.newsApi.getUrlToLogo(source));
+          this.sources.map(source => source.urlToLogo = this.newsApi.getUrlToLogo(source));
           console.log(`data: ${response.data.sources}`);
         })
         .catch(e => {

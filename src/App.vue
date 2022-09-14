@@ -7,7 +7,7 @@
           <pv-button label="CatchUp"
                      icon="pi pi-bars"
                      @click="toggleSidebar"/>
-          <side-menu v-model="sidebarVisible"
+          <side-menu v-model:visible="sidebarVisible"
                      v-on:source-selected="setSource"/>
         </template>
         <template #end>
