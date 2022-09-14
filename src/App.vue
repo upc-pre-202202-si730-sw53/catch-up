@@ -1,17 +1,46 @@
 <template>
-
+  <div class="w-full">
+    <!-- Toolbar and Sidebar -->
+    <div>
+      <pv-menubar class="sticky bg-primary">
+        <template #start>
+          <pv-button label="CatchUp"
+                     icon="pi pi-bars"
+                     @click="toggleSidebar"/>
+          <side-menu v-model="sidebarVisible"
+                     v-on:source-selected="setSource"/>
+        </template>
+        <template #end>
+          <language-switcher/>
+        </template>
+      </pv-menubar>
+    </div>
+    <!-- Main Content -->
+    <div>
+      <unavailable-content v-if="errors"/>
+      <main-content v-else :articles="articles"/>
+    </div>
+    <!-- Footer -->
+    <footer-content/>
+  </div>
 </template>
 
 <script>
 import {NewsApiService} from "@/news/services/news-api.service";
+import FooterContent from "@/components/footer-content.component.vue";
+import SideMenu from "@/components/side-menu.component.vue";
+import LanguageSwitcher from "@/components/language-switcher.component.vue";
+import MainContent from "@/components/main-content.component.vue";
+import UnavailableContent from "@/components/unavailable-content.component.vue";
 
 export default {
   name: 'App',
-
+  components: {UnavailableContent, MainContent, LanguageSwitcher, SideMenu, FooterContent},
   data() {
     return {
+      sidebarVisible: false,
       articles: [],
-      errors: [],
+      errors: null,
       newsApi: new NewsApiService(),
     };
   },
@@ -40,7 +69,10 @@ export default {
       this.newsApi.getArticlesForSource(source.id)
           .then(response => {
             this.articles = response.data.articles;
-            this.articles.map(article => article.source.url = source.url);
+            this.articles.map(article => {
+              article.source.url = source.url;
+              article.source.urlToLogo = source.urlToLogo;
+            });
             console.log(response.data);
           })
           .catch(e => {
@@ -51,6 +83,11 @@ export default {
     // On Source selected
     setSource(source) {
       this.getArticlesForSourceWithUrl(source);
+      this.toggleSidebar();
+    },
+
+    toggleSidebar() {
+      this.sidebarVisible = !this.sidebarVisible;
     }
   }
 }
